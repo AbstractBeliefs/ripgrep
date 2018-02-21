@@ -741,7 +741,9 @@ impl<'a> ArgMatches<'a> {
         } else if preference == "ansi" {
             termcolor::ColorChoice::AlwaysAnsi
         } else if preference == "auto" {
-            if atty::is(atty::Stream::Stdout) || self.is_present("pretty") {
+            if env::var_os("NO_COLOR").is_some() {
+                termcolor::ColorChoice::Never
+            } else if atty::is(atty::Stream::Stdout) || self.is_present("pretty") {
                 termcolor::ColorChoice::Auto
             } else {
                 termcolor::ColorChoice::Never
